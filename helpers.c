@@ -82,3 +82,24 @@ void power_off(void)
     /* Shut down system */
     psci_call(PSCI_SYSTEM_OFF, 0, 0, 0);
 }
+
+void atomic_lock(int *lock_var)
+{
+    while (__sync_lock_test_and_set(lock_var, 1));
+}
+
+void atomic_unlock(int *lock_var)
+{
+    __sync_lock_release(lock_var);
+}
+
+void non_atomic_lock(int *lock_var)
+{
+    while (*lock_var != 0);
+    *lock_var = 1;
+}
+
+void non_atomic_unlock(int *lock_var)
+{
+    *lock_var = 0;
+}

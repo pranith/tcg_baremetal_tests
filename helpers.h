@@ -29,6 +29,18 @@
 #define PSCI_CPU_OFF       0x84000002
 #define PSCI_SYSTEM_OFF    0x84000008
 
+#ifdef ATOMIC
+#define LOCK   atomic_lock
+#define UNLOCK atomic_unlock
+#else
+#define LOCK   non_atomic_lock
+#define UNLOCK non_atomic_unlock
+#endif
+
+int global_lock;
+int global_a;
+int global_b;
+
 int get_cpuid(void);
 void power_secondary(void);
 void power_off();

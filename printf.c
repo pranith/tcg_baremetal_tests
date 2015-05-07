@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "helpers.h"
+
 #define UARTDR      UART_PHYS
 #define UARTFR      0x18
 #define UARTFR_TXFF (1 << 5)
@@ -28,6 +30,7 @@ typedef __builtin_va_list   va_list;
 
 int *uart_phys = (int *)(UART_PHYS);
 int *uart_busy = (int *)(UART_PHYS + UARTFR);
+int printf_lock;
 
 static void putc(char c)
 {
@@ -72,6 +75,7 @@ void printf(const char *fmt, ...)
     int alt_form;
     unsigned long long val;
 
+    atomic_lock(&printf_lock);
     va_start(ap, fmt);
 
     for (; *fmt; fmt++) {
@@ -149,4 +153,5 @@ void printf(const char *fmt, ...)
     }
 
     va_end(ap);
+    atomic_unlock(&printf_lock);
 }

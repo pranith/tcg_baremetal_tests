@@ -15,9 +15,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "helpers.h"
+
+#define LOOP_SIZE 1000000
+
+void test_spinlock()
+{
+    int i, errors = 0;
+    int cpu = get_cpuid();
+
+    for (i = 0; i < LOOP_SIZE; i++) {
+        LOCK(&global_lock);
+
+        if (global_a == (cpu + 1) % 2) {
+            global_a = 1;
+            global_b = 0;
+        } else {
+            global_a = 0;
+            global_b = 1;
+        }
+
+        if (global_a == global_b) {
+            errors++;
+        }
+        UNLOCK(&global_lock);
+    }
+
+    printf("CPU%d: Done - Errors: %d\n", cpu, errors);
+}
+
 void main(void)
 {
-    printf("CPU %d on\n", get_cpuid());
+    if (!get_cpuid()) {
+            printf("Starting test\n");
+    }
+
+    test_spinlock();
     power_off();
 }
 

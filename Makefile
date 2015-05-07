@@ -12,6 +12,9 @@ LD_SCRIPT = link.ld.S
 LIBS      = $(shell $(CC) $(CCFLAGS) -print-libgcc-file-name)
 CPPFLAGS  += -gdwarf-2 -fno-stack-protector -nostdinc -fno-builtin
 
+# Set to ATOMIC to implement spinlock test with real atomic instructions
+TEST = ATOMIC
+
 #
 # Target specific variables
 #
