@@ -55,8 +55,16 @@ static void print_str(char *s)
 static void print_num(unsigned long long value, int base)
 {
     char digits[] = "0123456789abcdef";
-    char buf[32] = { 0 };
-    int i = sizeof(buf) - 2;
+    /* This is not working with arm-none-eabi-gcc v5.1, since memset is not
+     * found.
+     * char buf[32] = { 0 };*/
+    char buf[32];
+    int i = sizeof(buf) - 2, j;
+
+    /* Set the buffer to 0. See problem of before. */
+    for (j = 0; j < 32; j++) {
+        buf[j] = 0;
+    }
 
     do {
         buf[i--] = digits[value % base];
