@@ -51,7 +51,9 @@ void main(void)
     }
 
     test_spinlock();
+#ifndef VEXPRESS
     power_off();
+#endif
 }
 
 void init(void)
@@ -61,5 +63,7 @@ void init(void)
         return;
     }
 
+#ifndef VEXPRESS
     power_secondary();
+#endif
 }
