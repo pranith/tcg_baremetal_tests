@@ -18,32 +18,35 @@ TEST = ATOMIC
 #
 # Target specific variables
 #
-clean: export DIRS = build-virt build-virt64
+clean: export DIRS = build-virt build-virt64 build-vexpress
 
-virt:   export CPPFLAGS += -march=armv7-a
+virt vexpress:   export CPPFLAGS += -march=armv7-a
 virt64: export CPPFLAGS += -march=armv8-a -mgeneral-regs-only -mstrict-align
 
-virt:   export CROSS_COMPILE ?= arm-none-eabi-
+virt vexpress:   export CROSS_COMPILE ?= arm-none-eabi-
 virt64: export CROSS_COMPILE ?= aarch64-linux-gnu-
 
-virt:   export ARCH = ARCH_ARM
+virt vexpress:   export ARCH = ARCH_ARM
 virt64: export ARCH = ARCH_AARCH64
 
 virt virt64: export UART_PHYS = 0x09000000
 virt virt64: export ENTRY_POINT = 0x40000000
 
-virt virt64: export O_DIR = build-$@/
-virt virt64: export IMAGE = $(O_DIR)image-$@.axf
+vexpress: export UART_PHYS = 0x1c090000
+vexpress: export ENTRY_POINT = 0x80010000
+
+virt virt64 vexpress: export O_DIR = build-$@/
+virt virt64 vexpress: export IMAGE = $(O_DIR)image-$@.axf
 
 #
 # Target build rules
 #
-all: virt virt64
+all: virt virt64 vexpress
 
 clean:
 	rm -rf $(DIRS)
 
-virt virt64:
+virt virt64 vexpress:
 	mkdir -p $(O_DIR)
 	@$(MAKE) $(IMAGE) --no-print-directory
 
@@ -63,4 +66,4 @@ $(O_DIR)%.o: %.c $(H_DEPS)
 $(O_DIR)%.o: %.S $(H_DEPS)
 	$(CC) -D$(ARCH) $(CPPFLAGS) -c -o $@ $<
 
-.PHONY: all clean virt virt64
+.PHONY: all clean virt virt64 vexpress
