@@ -45,4 +45,11 @@ int get_cpuid(void);
 void power_secondary(void);
 void power_off();
 
+void non_atomic_lock(int *lock_var);
+void non_atomic_unlock(int *lock_var);
+void atomic_lock(int *lock_var);
+void atomic_unlock(int *lock_var);
+
+void printf(const char *fmt, ...);
+
 #endif
