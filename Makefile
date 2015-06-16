@@ -38,6 +38,11 @@ vexpress: export ENTRY_POINT = 0x80010000
 virt virt64 vexpress: export O_DIR = build-$@/
 virt virt64 vexpress: export IMAGE = $(O_DIR)image-$@.axf
 
+# Export machine name
+virt:     export BOARD_MODEL = VIRT
+virt64:   export BOARD_MODEL = VIRT64
+vexpress: export BOARD_MODEL = VEXPRESS
+
 #
 # Target build rules
 #
@@ -60,7 +65,7 @@ $(O_DIR)link.ld: $(LD_SCRIPT)
 	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(ARCH) $(CPPFLAGS) -E -P -C -o $@ $<
 
 $(O_DIR)%.o: %.c $(H_DEPS)
-	$(CC) -DENTRY_POINT=$(ENTRY_POINT) \
+	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(BOARD_MODEL) \
           -DUART_PHYS=$(UART_PHYS) -D$(ARCH) $(CPPFLAGS) -c -o $@ $<
 
 $(O_DIR)%.o: %.S $(H_DEPS)
