@@ -49,22 +49,42 @@ int psci_call(int psci_function, int arg0, int arg1, int arg2)
 }
 #endif
 
+#ifndef VEXPRESS
 void power_secondary(void)
 {
     int ret, cpu = 1;
 
+    online_cpus++;
+    if(get_cpuid()) {
+        return;
+    }
+
     /* Sequentially power-up all secondary cores,
      * error means trying to wake up non existing cores */
     do { ret = psci_call(PSCI_CPU_ON, cpu++, ENTRY_POINT, 0); } while (!ret);
-}
 
+    /* Wait for all secondaries to wakeup */
+    while(online_cpus != (cpu - 1));
+}
+#else
+void power_secondary(void)
+{
+    int *sys_24mhz = (int *)SYS_24MHZ;
+
+    online_cpus++;
+
+    /* Wait 1 second for any secondaries */
+    while(*sys_24mhz <= 24000000);
+}
+#endif
+
+#ifndef VEXPRESS
 void power_off(void)
 {
     int ret, i = 1;
-    int cpu = get_cpuid();
 
     /* Only secondary cores should power off themselves */
-    if(cpu) {
+    if(get_cpuid()) {
         psci_call(PSCI_CPU_OFF, 0, 0, 0);
         return;
     }
@@ -82,6 +102,24 @@ void power_off(void)
     /* Shut down system */
     psci_call(PSCI_SYSTEM_OFF, 0, 0, 0);
 }
+#else
+void power_off(void)
+{
+    int *sys_cfgctrl = (int *)(SYS_CFGCTRL);
+
+    online_cpus--;
+
+    if(get_cpuid()) {
+        return;
+    }
+
+    /* Wait for any secondary cores */
+    while(online_cpus);
+
+    /* Shutdown system */
+    *sys_cfgctrl = SYS_CFGCTR_START | SYS_CFGCTR_WRITE | SYS_CFG_SHUTDOWN;
+}
+#endif
 
 void atomic_lock(int *lock_var)
 {

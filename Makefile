@@ -33,7 +33,7 @@ virt virt64: export UART_PHYS = 0x09000000
 virt virt64: export ENTRY_POINT = 0x40000000
 
 vexpress: export UART_PHYS = 0x1c090000
-vexpress: export ENTRY_POINT = 0x80010000
+vexpress: export ENTRY_POINT = 0x80000100
 
 virt virt64 vexpress: export O_DIR = build-$@/
 virt virt64 vexpress: export IMAGE = $(O_DIR)image-$@.axf

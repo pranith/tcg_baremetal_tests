@@ -29,6 +29,13 @@
 #define PSCI_CPU_OFF       0x84000002
 #define PSCI_SYSTEM_OFF    0x84000008
 
+#define SYS_CFGCTRL 0x1c0100A4
+#define SYS_24MHZ   0x1c01005c
+
+#define SYS_CFGCTR_START   0x80000000
+#define SYS_CFGCTR_WRITE   0x40000000
+#define SYS_CFG_SHUTDOWN   0x00800000
+
 #ifdef ATOMIC
 #define LOCK   atomic_lock
 #define UNLOCK atomic_unlock
@@ -37,6 +44,7 @@
 #define UNLOCK non_atomic_unlock
 #endif
 
+int online_cpus;
 int global_lock;
 int global_a;
 int global_b;

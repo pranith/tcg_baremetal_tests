@@ -17,7 +17,7 @@
 
 #include "helpers.h"
 
-#define LOOP_SIZE 1000000
+#define LOOP_SIZE 10000000
 
 void test_spinlock()
 {
@@ -46,24 +46,9 @@ void test_spinlock()
 
 void main(void)
 {
-    if (!get_cpuid()) {
-            printf("Starting test\n");
-    }
+    power_secondary();
+    printf("CPU%d online\n", get_cpuid());
 
     test_spinlock();
-#ifndef VEXPRESS
     power_off();
-#endif
-}
-
-void init(void)
-{
-    /* Only CPU 0 should be here */
-    if (get_cpuid()) {
-        return;
-    }
-
-#ifndef VEXPRESS
-    power_secondary();
-#endif
 }

@@ -49,6 +49,5 @@
 .global _start
 _start:
     setup_stack
-    bl init
     bl main
-    b .
+    wfi
