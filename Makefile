@@ -65,7 +65,7 @@ $(O_DIR)link.ld: $(LD_SCRIPT)
 	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(ARCH) $(CPPFLAGS) -E -P -C -o $@ $<
 
 $(O_DIR)%.o: %.c $(H_DEPS)
-	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(BOARD_MODEL) \
+	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(BOARD_MODEL) -D$(TEST) \
           -DUART_PHYS=$(UART_PHYS) -D$(ARCH) $(CPPFLAGS) -c -o $@ $<
 
 $(O_DIR)%.o: %.S $(H_DEPS)
