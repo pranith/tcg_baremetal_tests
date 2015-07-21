@@ -41,7 +41,8 @@ void test_spinlock()
         UNLOCK(&global_lock);
     }
 
-    printf("CPU%d: Done - Errors: %d\n", cpu, errors);
+    printf("CPU%d: Done - Errors: %d - Iterations: %d\n",
+                                cpu, errors, LOOP_SIZE);
 }
 
 void main(void)
