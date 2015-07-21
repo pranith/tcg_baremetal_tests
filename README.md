@@ -9,8 +9,8 @@ Compiling
 Usage
 =====
 
-Example for virt: qemu-system-arm \
-			-nographic -smp N\
-			-M virt -cpu cortex-a15 \
+Example for virt: qemu-system-arm
+			-nographic -smp N
+			-M virt -cpu cortex-a15
 			-kernel build-virt/image-virt.axf
 

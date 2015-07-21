@@ -73,8 +73,8 @@ void secondary_power_on(void)
 
     online_cpus++;
 
-    /* Wait 1 second for any secondaries */
-    while(*sys_24mhz <= 24000000);
+    /* Wait 2 second for any secondaries */
+    while(*sys_24mhz <= 48000000);
 }
 #endif
 
