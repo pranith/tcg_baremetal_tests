@@ -50,7 +50,7 @@ int psci_call(int psci_function, int arg0, int arg1, int arg2)
 #endif
 
 #ifndef VEXPRESS
-void power_secondary(void)
+void secondary_power_on(void)
 {
     int ret, cpu = 1;
 
@@ -67,7 +67,7 @@ void power_secondary(void)
     while(online_cpus != (cpu - 1));
 }
 #else
-void power_secondary(void)
+void secondary_power_on(void)
 {
     int *sys_24mhz = (int *)SYS_24MHZ;
 
@@ -79,12 +79,13 @@ void power_secondary(void)
 #endif
 
 #ifndef VEXPRESS
-void power_off(void)
+void secondary_power_off(void)
 {
     int ret, i = 1;
 
     /* Only secondary cores should power off themselves */
     if(get_cpuid()) {
+        online_cpus--;
         psci_call(PSCI_CPU_OFF, 0, 0, 0);
         return;
     }
@@ -98,23 +99,31 @@ void power_off(void)
             i++;
         }
     } while(ret >= 0);
+}
 
+void shut_down(void)
+{
     /* Shut down system */
     psci_call(PSCI_SYSTEM_OFF, 0, 0, 0);
 }
 #else
-void power_off(void)
+void secondary_power_off(void)
 {
     int *sys_cfgctrl = (int *)(SYS_CFGCTRL);
 
     online_cpus--;
 
     if(get_cpuid()) {
-        return;
+        asm("wfi");
     }
 
     /* Wait for any secondary cores */
     while(online_cpus);
+}
+
+void shut_down(void)
+{
+    int *sys_cfgctrl = (int *)(SYS_CFGCTRL);
 
     /* Shutdown system */
     *sys_cfgctrl = SYS_CFGCTR_START | SYS_CFGCTR_WRITE | SYS_CFG_SHUTDOWN;

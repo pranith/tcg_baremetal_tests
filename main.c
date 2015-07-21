@@ -46,9 +46,10 @@ void test_spinlock()
 
 void main(void)
 {
-    power_secondary();
+    secondary_power_on();
     printf("CPU%d online\n", get_cpuid());
 
     test_spinlock();
-    power_off();
+    secondary_power_off();
+    shut_down();
 }
