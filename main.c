@@ -17,7 +17,7 @@
 
 #include "helpers.h"
 
-#define LOOP_SIZE 10000000
+#define LOOP_SIZE ITERS
 
 void test_spinlock()
 {

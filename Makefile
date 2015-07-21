@@ -3,6 +3,7 @@
 #
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
+ITERS ?= 100000
 
 S_OBJS    = start.o
 C_OBJS    = main.o printf.o helpers.o
@@ -65,7 +66,7 @@ $(O_DIR)link.ld: $(LD_SCRIPT)
 	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(ARCH) $(CPPFLAGS) -E -P -C -o $@ $<
 
 $(O_DIR)%.o: %.c $(H_DEPS)
-	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -D$(BOARD_MODEL) -D$(TEST) \
+	$(CC) -DENTRY_POINT=$(ENTRY_POINT) -DITERS=$(ITERS) -D$(BOARD_MODEL) -D$(TEST) \
           -DUART_PHYS=$(UART_PHYS) -D$(ARCH) $(CPPFLAGS) -c -o $@ $<
 
 $(O_DIR)%.o: %.S $(H_DEPS)
