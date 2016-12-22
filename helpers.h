@@ -50,8 +50,8 @@ int global_a;
 int global_b;
 
 int get_cpuid(void);
-void power_secondary(void);
-void power_off();
+void secondary_power_on(void);
+void secondary_power_off();
 
 void non_atomic_lock(int *lock_var);
 void non_atomic_unlock(int *lock_var);
